@@ -32,5 +32,4 @@ def create(
     print("MVP Flet App Created")
 
 
-def main():
-    app()
+app()
