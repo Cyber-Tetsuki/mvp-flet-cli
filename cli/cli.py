@@ -30,4 +30,4 @@ def hello(name: str):
 
 
 if __name__ == "__main__":
-    app()
+    print("hello")
