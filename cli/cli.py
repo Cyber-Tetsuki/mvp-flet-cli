@@ -28,6 +28,3 @@ def create(project_name: str, dst_folder: str):
 def hello(name: str):
     print("Hello ", name)
 
-
-if __name__ == "__main__":
-    app()
