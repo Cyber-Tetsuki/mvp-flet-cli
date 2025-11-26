@@ -1,20 +1,18 @@
 import sys
-
 import typer
-from typer import Typer
 import copier
 
-app = Typer()
-
+app = typer.Typer()
 
 @app.command()
 def hello(name: str):
-    print("Hello ", name)
-
+    print("Hello", name)
 
 @app.command()
-def create(project_name: str = typer.Option(None, "--proj-name"),
-           dst_folder: str = typer.Option(None, "--dist-path")) -> None:
+def create(
+    project_name: str = typer.Option(..., "--proj-name", prompt=True),
+    dst_folder: str = typer.Option(..., "--dist-path", prompt=True),
+):
     template_url = "https://github.com/Cyber-Tetsuki/mvp-flet"
     default = {
         "project_name": project_name,
@@ -30,7 +28,3 @@ def create(project_name: str = typer.Option(None, "--proj-name"),
     )
 
     print("MVP Flet App Created")
-
-
-if __name__ == "__main__":
-    app()
