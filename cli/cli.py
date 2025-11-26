@@ -1,4 +1,6 @@
 import sys
+
+import typer
 from typer import Typer
 import copier
 
@@ -6,9 +8,9 @@ app = Typer()
 
 
 @app.command()
-def create(project_name: str, dst_folder: str):
+def create(project_name: str = typer.Option(..., "--project-name"),
+           dst_folder: str = typer.Option(..., "--dst-folder")) -> None:
     template_url = "https://github.com/Cyber-Tetsuki/mvp-flet"
-
     default = {
         "project_name": project_name,
         "python_path": sys.executable,
