@@ -8,8 +8,8 @@ app = Typer()
 
 
 @app.command()
-def create(project_name: str = typer.Option(..., "--project-name"),
-           dst_folder: str = typer.Option(..., "--dst-folder")) -> None:
+def create(project_name: str = typer.Option(..., "--proj-name"),
+           dst_folder: str = typer.Option(..., "--dist-path")) -> None:
     template_url = "https://github.com/Cyber-Tetsuki/mvp-flet"
     default = {
         "project_name": project_name,
