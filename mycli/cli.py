@@ -1,6 +1,7 @@
 import sys
 import typer
 import copier
+import os
 
 app = typer.Typer()
 
@@ -12,8 +13,8 @@ def hello(name: str):
 
 @app.command()
 def create(
-        project_name: str = typer.Option(..., "--proj-name", prompt=True),
-        dst_folder: str = typer.Option(..., "--dist-path", prompt=True),
+        project_name: str = typer.Option(..., "--proj-name"),
+        dst_folder: str = typer.Option(os.getcwd(), "--dist-path"),
 ):
     template_url = "https://github.com/Cyber-Tetsuki/mvp-flet"
     default = {
