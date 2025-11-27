@@ -53,6 +53,39 @@ def append_in_init_file(path: str, file_name: str, class_name: str):
         typer.echo(traceback.format_exc())
 
 
+def append_rs_in_factory(name: str):
+    try:
+        service_name = name + "_service"
+        repos_name = name + "_repos"
+        repos_class_name = inflection.camelize(f"{name}Repos", uppercase_first_letter=True)
+        service_class_name = inflection.camelize(f"{name}Service", uppercase_first_letter=True)
+        path = "factory.py"
+        content = open(path).read()
+        new_content = textwrap.dedent(f"""
+        from views import {service_class_name}
+        from presenter import {repos_class_name}
+        """)
+
+        for index, line in enumerate(content.splitlines()):
+            if "def __init__(" in line:
+                line += "\n" + "{{ init_code }}"
+            new_content += "\n" + line
+
+        template = Template(new_content)
+
+        init_code = f"""
+        self._{repos_name} = {repos_class_name}()
+        self._{service_name} = {service_class_name}()
+        """
+        final_content = template.render(init_code=init_code)
+
+        with open(path, "w") as f:
+            f.write(final_content)
+    except Exception as e:
+        typer.echo(e)
+        typer.echo(traceback.format_exc())
+
+
 def append_vp_in_factory(name: str):
     try:
         view_name = name + "_view"
@@ -237,6 +270,7 @@ def create_repos(name: str = typer.Option(..., "--name")):
 def create_rs(name: str = typer.Option(..., "--name")):
     create_repos(name)
     create_service(name)
+    append_rs_in_factory(name)
 
 
 def main():
