@@ -73,7 +73,7 @@ def append_vp_in_factory(name: str):
     template = Template(new_content)
 
     new_func = f"""
-        def create_{view_name.removesuffix('.py')}():
+        def create_{view_name.removesuffix('.py')}(self):
             view = {view_class_name}(self._env)
             presenter = {presenter_class_name}(view)
             view._presenter = presenter
@@ -160,6 +160,7 @@ def create_vp(name: str = typer.Option(..., "--name")):
     create_view(name)
     create_presenter(name)
     append_vp_in_factory(name)
+
 
 @app.command()
 def create_service(name: str = typer.Option(..., "--name")):
