@@ -1,11 +1,11 @@
 import sys
 import traceback
-
 import typer
 import copier
 import os
 import inflection
 import textwrap
+from jinja2 import Template
 
 app = typer.Typer()
 
@@ -37,7 +37,7 @@ def create(
     print("MVP Flet App Created")
 
 
-def append_in_init(path: str, file_name: str, class_name: str):
+def append_in_init_file(path: str, file_name: str, class_name: str):
     try:
         init_path = path + "/__init__.py"
         with open(init_path, "r") as f:
@@ -51,6 +51,39 @@ def append_in_init(path: str, file_name: str, class_name: str):
     except Exception as e:
         typer.echo(e)
         typer.echo(traceback.format_exc())
+
+
+def append_vp_in_factory(name: str):
+    view_name = name + "_view"
+    presenter_class_name = inflection.camelize(f"{name}Presenter", uppercase_first_letter=True)
+    view_class_name = inflection.camelize(f"{name}View", uppercase_first_letter=True)
+    path = "factory.py"
+    content = open(path).read()
+    new_content = f"""
+    from views import {view_class_name}
+    from presenter import {presenter_class_name}
+    """
+
+    for index, line in enumerate(content.strip("\n").splitlines()):
+        if index == len(content.splitlines()) - 1:
+            line += "\n \t\t{{ func_code }}"
+
+        new_content += "\n" + line
+
+    template = Template(new_content)
+
+    new_func = f"""
+        def create_{view_name.removesuffix('.py')}():
+            view = {view_class_name}(self._env)
+            presenter = {presenter_class_name}(view)
+            view._presenter = presenter
+            return view.build()
+    """
+
+    final_content = template.render(func_code=new_func)
+
+    with open(path, "w") as f:
+        f.write(final_content)
 
 
 def create_python_file(path: str, content: str):
@@ -82,7 +115,7 @@ def create_presenter(name: str = typer.Option(..., "--name")):
     presenter_path = cwd + "/presenter/"
     file_path = presenter_path + file_name
     create_python_file(file_path, presenter_content)
-    append_in_init(presenter_path, file_name, presenter_class_name)
+    append_in_init_file(presenter_path, file_name, presenter_class_name)
 
     typer.echo("Created Presenter File")
 
@@ -117,7 +150,7 @@ def create_view(name: str = typer.Option(..., "--name")):
     view_path = cwd + "/views/"
     file_path = view_path + file_name
     create_python_file(file_path, view_content)
-    append_in_init(view_path, file_name, view_class_name)
+    append_in_init_file(view_path, file_name, presenter_class_name)
 
     typer.echo("Created View File")
 
@@ -152,7 +185,7 @@ def create_service(name: str = typer.Option(..., "--name")):
     view_path = cwd + "/services/"
     file_path = view_path + file_name
     create_python_file(file_path, service_content)
-    append_in_init(view_path, file_name, repos_class_name)
+    append_in_init_file(view_path, file_name, repos_class_name)
 
     typer.echo("Created Service File")
 
@@ -190,7 +223,7 @@ def create_repos(name: str = typer.Option(..., "--name")):
     view_path = cwd + "/db/repository/"
     file_path = view_path + file_name
     create_python_file(file_path, repos_content)
-    append_in_init(view_path, file_name, repos_class_name)
+    append_in_init_file(view_path, file_name, repos_class_name)
 
     typer.echo("Created Repos File")
 
@@ -199,6 +232,7 @@ def create_repos(name: str = typer.Option(..., "--name")):
 def create_rs(name: str = typer.Option(..., "--name")):
     create_repos(name)
     create_service(name)
+    append_vp_in_factory(name)
 
 
 def main():
