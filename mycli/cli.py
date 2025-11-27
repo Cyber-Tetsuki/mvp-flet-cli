@@ -43,7 +43,7 @@ def create_python_file(path: str, content: str):
 
 
 @app.command()
-def create_view(view_name: str = typer.Option(..., "--name")):
+def create_view_presenter(view_name: str = typer.Option(..., "--name")):
     cwd = os.getcwd()
     class_name = inflection.camelize(view_name, uppercase_first_letter=True)
     view_content = f"""
