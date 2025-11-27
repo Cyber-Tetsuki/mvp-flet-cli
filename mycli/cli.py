@@ -239,8 +239,6 @@ def create_repos(name: str = typer.Option(..., "--name")):
             from typing import TYPE_CHECKING
             from sqlalchemy import select, and_, update, insert
             from sqlalchemy.orm import joinedload
-        
-            from db_models import Credentials, MatchActivity, SessionTable
             from utils.logs import Logging
             
             if TYPE_CHECKING:
