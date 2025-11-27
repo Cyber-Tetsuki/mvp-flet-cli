@@ -65,7 +65,7 @@ def append_vp_in_factory(name: str):
         from presenter import {presenter_class_name}
         """)
 
-        for index, line in enumerate(content.strip("\n").splitlines()):
+        for index, line in enumerate(content.splitlines()):
             if index == len(content.splitlines()) - 1:
                 line += "\n \t\t{{ func_code }}"
 
@@ -74,11 +74,11 @@ def append_vp_in_factory(name: str):
         template = Template(new_content)
 
         new_func = f"""
-            def create_{view_name.removesuffix('.py')}(self):
-                view = {view_class_name}(self._env)
-                presenter = {presenter_class_name}(view)
-                view._presenter = presenter
-                return view.build()
+    def create_{view_name.removesuffix('.py')}(self):
+        view = {view_class_name}(self._env)
+        presenter = {presenter_class_name}(view)
+        view._presenter = presenter
+        return view.build()
         """
 
         final_content = template.render(func_code=new_func)
