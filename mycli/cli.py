@@ -62,8 +62,8 @@ def append_rs_in_factory(name: str):
         path = "factory.py"
         content = open(path).read()
         new_content = textwrap.dedent(f"""
-        from views import {service_class_name}
-        from presenter import {repos_class_name}
+        from services import {service_class_name}
+        from db.repository import {repos_class_name}
         """)
 
         for index, line in enumerate(content.splitlines()):
@@ -223,7 +223,7 @@ def create_service(name: str = typer.Option(..., "--name")):
     view_path = cwd + "/services/"
     file_path = view_path + file_name
     create_python_file(file_path, service_content)
-    append_in_init_file(view_path, file_name, repos_class_name)
+    append_in_init_file(view_path, file_name, service_class_name)
 
     typer.echo("Created Service File")
 
