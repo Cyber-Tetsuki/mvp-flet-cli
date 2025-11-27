@@ -117,5 +117,57 @@ def create_view(name: str = typer.Option(..., "--name")):
     append_in_init(view_path, file_name, view_class_name)
 
 
+@app.command()
+def create_vp(name: str = typer.Option(..., "--name")):
+    cwd = os.getcwd()
+    presenter_class_name = inflection.camelize(f"{name}Presenter", uppercase_first_letter=True)
+    view_class_name = inflection.camelize(f"{name}View", uppercase_first_letter=True)
+    view_content = textwrap.dedent(
+        f"""
+            import flet as ft
+            from flet.core.types import MainAxisAlignment, CrossAxisAlignment
+            from model import EnvModel
+            from typing import Optional, TYPE_CHECKING
+
+            if TYPE_CHECKING:
+                from presenter import {presenter_class_name}
+
+
+            class {view_class_name}:
+                def __init__(self, env: EnvModel):
+                    self._env = env
+                    self._presenter: Optional["{presenter_class_name}"] = None
+
+                def build(self):
+                    return ft.View()
+            """
+    )
+
+    presenter_content = textwrap.dedent(
+        f"""
+                 from views import {view_class_name}View
+
+                 class {presenter_class_name}:
+                     def __init__(self,view : {view_class_name}View):
+                         self._view = view
+
+             """
+    )
+
+    """Presenter"""
+    presenter_file_name = name + "_presenter.py"
+    presenter_path = cwd + "/presenter/"
+    file_path = presenter_path + presenter_file_name
+    create_python_file(file_path, presenter_content)
+    append_in_init(presenter_path, presenter_file_name, presenter_class_name)
+
+    """View"""
+    view_file_name = name + "_view.py"
+    view_path = cwd + "/views/"
+    file_path = view_path + view_file_name
+    create_python_file(file_path, view_content)
+    append_in_init(view_path, view_file_name, view_class_name)
+
+
 def main():
     app()
