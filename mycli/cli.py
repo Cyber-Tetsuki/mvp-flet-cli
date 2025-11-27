@@ -1,4 +1,6 @@
 import sys
+import traceback
+
 import typer
 import copier
 import os
@@ -48,6 +50,7 @@ def append_in_init(path: str, file_name: str, class_name: str):
 
     except Exception as e:
         typer.echo(e)
+        typer.echo(traceback.format_exc())
 
 
 def create_python_file(path: str, content: str):
