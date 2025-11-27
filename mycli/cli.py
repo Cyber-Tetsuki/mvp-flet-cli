@@ -67,7 +67,7 @@ def append_rs_in_factory(name: str):
         """)
 
         for index, line in enumerate(content.splitlines()):
-            if "def __init__(" in line:
+            if "append here. ps. ###dont remove this comment" in line:
                 line += "\n" + "{{ init_code }}"
             new_content += "\n" + line
 
