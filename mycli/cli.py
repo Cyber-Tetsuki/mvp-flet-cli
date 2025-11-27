@@ -59,6 +59,7 @@ def create_python_file(path: str, content: str):
             f.write(content)
     except Exception as e:
         typer.echo(e)
+        typer.echo(traceback.format_exc())
 
 
 @app.command()
@@ -82,6 +83,8 @@ def create_presenter(name: str = typer.Option(..., "--name")):
     file_path = presenter_path + file_name
     create_python_file(file_path, presenter_content)
     append_in_init(presenter_path, file_name, presenter_class_name)
+
+    typer.echo("Created Presenter File")
 
 
 @app.command()
@@ -116,6 +119,8 @@ def create_view(name: str = typer.Option(..., "--name")):
     create_python_file(file_path, view_content)
     append_in_init(view_path, file_name, view_class_name)
 
+    typer.echo("Created View File")
+
 
 @app.command()
 def create_vp(name: str = typer.Option(..., "--name")):
@@ -148,6 +153,8 @@ def create_service(name: str = typer.Option(..., "--name")):
     file_path = view_path + file_name
     create_python_file(file_path, service_content)
     append_in_init(view_path, file_name, repos_class_name)
+
+    typer.echo("Created Service File")
 
 
 @app.command()
@@ -185,11 +192,14 @@ def create_repos(name: str = typer.Option(..., "--name")):
     create_python_file(file_path, repos_content)
     append_in_init(view_path, file_name, repos_class_name)
 
+    typer.echo("Created Repos File")
+
 
 @app.command()
 def create_rs(name: str = typer.Option(..., "--name")):
     create_view(name)
     create_presenter(name)
+
 
 def main():
     app()
