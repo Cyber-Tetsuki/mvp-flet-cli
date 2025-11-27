@@ -38,7 +38,7 @@ def create(
 def append_in_init(path: str, file_name: str, class_name: str):
     try:
         init_path = path + "/__init__.py"
-        with open(path, "w") as f:
+        with open(init_path, "w") as f:
             content = textwrap.dedent(f.read())
 
         content = content + "\n" + f"from .{file_name} import {class_name}"
