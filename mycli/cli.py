@@ -43,7 +43,7 @@ def append_in_init(path: str, file_name: str, class_name: str):
         with open(init_path, "r") as f:
             content = textwrap.dedent(f.read())
 
-        content = content + "\n" + f"from .{file_name} import {class_name}"
+        content = content + "\n" + f"from .{file_name.removesuffix('.py')} import {class_name}"
 
         with open(init_path, "w") as f:
             f.write(content)
