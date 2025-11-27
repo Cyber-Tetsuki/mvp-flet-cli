@@ -54,36 +54,40 @@ def append_in_init_file(path: str, file_name: str, class_name: str):
 
 
 def append_vp_in_factory(name: str):
-    view_name = name + "_view"
-    presenter_class_name = inflection.camelize(f"{name}Presenter", uppercase_first_letter=True)
-    view_class_name = inflection.camelize(f"{name}View", uppercase_first_letter=True)
-    path = "factory.py"
-    content = open(path).read()
-    new_content = f"""
-    from views import {view_class_name}
-    from presenter import {presenter_class_name}
-    """
+    try:
+        view_name = name + "_view"
+        presenter_class_name = inflection.camelize(f"{name}Presenter", uppercase_first_letter=True)
+        view_class_name = inflection.camelize(f"{name}View", uppercase_first_letter=True)
+        path = "factory.py"
+        content = open(path).read()
+        new_content = textwrap.dedent(f"""
+        from views import {view_class_name}
+        from presenter import {presenter_class_name}
+        """)
 
-    for index, line in enumerate(content.strip("\n").splitlines()):
-        if index == len(content.splitlines()) - 1:
-            line += "\n \t\t{{ func_code }}"
+        for index, line in enumerate(content.strip("\n").splitlines()):
+            if index == len(content.splitlines()) - 1:
+                line += "\n \t\t{{ func_code }}"
 
-        new_content += "\n" + line
+            new_content += "\n" + line
 
-    template = Template(new_content)
+        template = Template(new_content)
 
-    new_func = f"""
-        def create_{view_name.removesuffix('.py')}(self):
-            view = {view_class_name}(self._env)
-            presenter = {presenter_class_name}(view)
-            view._presenter = presenter
-            return view.build()
-    """
+        new_func = f"""
+            def create_{view_name.removesuffix('.py')}(self):
+                view = {view_class_name}(self._env)
+                presenter = {presenter_class_name}(view)
+                view._presenter = presenter
+                return view.build()
+        """
 
-    final_content = template.render(func_code=new_func)
+        final_content = template.render(func_code=new_func)
 
-    with open(path, "w") as f:
-        f.write(textwrap.dedent(final_content))
+        with open(path, "w") as f:
+            f.write(final_content)
+    except Exception as e:
+        typer.echo(e)
+        typer.echo(traceback.format_exc())
 
 
 def create_python_file(path: str, content: str):
