@@ -45,7 +45,7 @@ def append_in_init(path: str, file_name: str, class_name: str):
 
         content = content + "\n" + f"from .{file_name} import {class_name}"
 
-        with open(path, "w") as f:
+        with open(init_path, "w") as f:
             f.write(content)
 
     except Exception as e:
