@@ -75,8 +75,9 @@ def create_presenter(name: str = typer.Option(..., "--name")):
     )
 
     file_name = name + "_presenter.py"
-    presenter_path = cwd + "/presenter/" + file_name
-    create_python_file(presenter_path, presenter_content)
+    presenter_path = cwd + "/presenter/"
+    file_path = presenter_path + file_name
+    create_python_file(file_path, presenter_content)
     append_in_init(presenter_path, file_name, presenter_class_name)
 
 
@@ -107,8 +108,9 @@ def create_view(name: str = typer.Option(..., "--name")):
     )
 
     file_name = name + "_view.py"
-    view_path = cwd + "/views/" + file_name
-    create_python_file(view_path, view_content)
+    view_path = cwd + "/views/"
+    file_path = view_path + file_name
+    create_python_file(file_path, view_content)
     append_in_init(view_path, file_name, view_class_name)
 
 
