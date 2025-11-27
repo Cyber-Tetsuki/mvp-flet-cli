@@ -74,8 +74,8 @@ def append_rs_in_factory(name: str):
         template = Template(new_content)
 
         init_code = f"""
-        self._{repos_name} = {repos_class_name}()
-        self._{service_name} = {service_class_name}()
+        self._{repos_name} = {repos_class_name}(self._env,self._db)
+        self._{service_name} = {service_class_name}(self._{repos_name})
         """
         final_content = template.render(init_code=init_code)
 
