@@ -150,7 +150,7 @@ def create_view(name: str = typer.Option(..., "--name")):
     view_path = cwd + "/views/"
     file_path = view_path + file_name
     create_python_file(file_path, view_content)
-    append_in_init_file(view_path, file_name, presenter_class_name)
+    append_in_init_file(view_path, file_name, view_class_name)
 
     typer.echo("Created View File")
 
@@ -159,7 +159,7 @@ def create_view(name: str = typer.Option(..., "--name")):
 def create_vp(name: str = typer.Option(..., "--name")):
     create_view(name)
     create_presenter(name)
-
+    append_vp_in_factory(name)
 
 @app.command()
 def create_service(name: str = typer.Option(..., "--name")):
@@ -232,7 +232,6 @@ def create_repos(name: str = typer.Option(..., "--name")):
 def create_rs(name: str = typer.Option(..., "--name")):
     create_repos(name)
     create_service(name)
-    append_vp_in_factory(name)
 
 
 def main():
