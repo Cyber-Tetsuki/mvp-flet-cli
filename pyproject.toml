@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "flet-mvp"
 version = "1.0"
 requires-python = ">=3.10"
-dependencies = ["typer[all]", "copier"]
+dependencies = ["typer[all]", "copier","inflection"]
 
 [project.scripts]
 flet-mvp = "mycli.cli:main"
