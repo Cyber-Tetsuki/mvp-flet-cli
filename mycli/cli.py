@@ -65,13 +65,13 @@ def create_python_file(path: str, content: str):
 def create_presenter(name: str = typer.Option(..., "--name")):
     cwd = os.getcwd()
     presenter_class_name = inflection.camelize(f"{name}Presenter", uppercase_first_letter=True)
-    view_class_name = inflection.camelize(name, uppercase_first_letter=True)
+    view_class_name = inflection.camelize(f"{name}View", uppercase_first_letter=True)
     presenter_content = textwrap.dedent(
         f"""
-                from views import {view_class_name}View
+                from views import {view_class_name}
 
                 class {presenter_class_name}:
-                    def __init__(self,view : {view_class_name}View):
+                    def __init__(self,view : {view_class_name}):
                         self._view = view
 
             """
@@ -145,10 +145,10 @@ def create_vp(name: str = typer.Option(..., "--name")):
 
     presenter_content = textwrap.dedent(
         f"""
-                 from views import {view_class_name}View
+                 from views import {view_class_name}
 
                  class {presenter_class_name}:
-                     def __init__(self,view : {view_class_name}View):
+                     def __init__(self,view : {view_class_name}):
                          self._view = view
 
              """
