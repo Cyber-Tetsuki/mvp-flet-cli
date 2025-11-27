@@ -3,6 +3,7 @@ import typer
 import copier
 import os
 import inflection
+import textwrap
 
 app = typer.Typer()
 
@@ -34,48 +35,81 @@ def create(
     print("MVP Flet App Created")
 
 
+def append_in_init(path: str, file_name: str, class_name: str):
+    try:
+        init_path = path + "/__init__.py"
+        with open(path, "w") as f:
+            content = textwrap.dedent(f.read())
+
+        content = content + "\n" + f"from .{file_name} import {class_name}"
+
+        with open(path, "w") as f:
+            f.write(content)
+
+    except Exception as e:
+        typer.echo(e)
+
+
 def create_python_file(path: str, content: str):
     try:
         with open(path, "w") as f:
             f.write(content)
     except Exception as e:
-        print(e)
+        typer.echo(e)
 
 
 @app.command()
-def create_view_presenter(view_name: str = typer.Option(..., "--name")):
+def create_presenter(name: str = typer.Option(..., "--name")):
     cwd = os.getcwd()
-    class_name = inflection.camelize(view_name, uppercase_first_letter=True)
-    view_content = f"""
-    import flet as ft
-    from flet.core.types import MainAxisAlignment, CrossAxisAlignment
-    from model import EnvModel
-    from typing import Optional, TYPE_CHECKING
-    
-    if TYPE_CHECKING:
-        from presenter import {class_name}Presenter
-    
-    
-    class AppView:
-        def __init__(self, env: EnvModel):
-            self._env = env
-            self._presenter: Optional["{class_name}Presenter"] = None
-    """
+    presenter_class_name = inflection.camelize(f"{name}Presenter", uppercase_first_letter=True)
+    view_class_name = inflection.camelize(name, uppercase_first_letter=True)
+    presenter_content = textwrap.dedent(
+        f"""
+                from views import {view_class_name}View
 
-    presenter_content = f"""
-        from views import {class_name}View
+                class {presenter_class_name}:
+                    def __init__(self,view : {view_class_name}View):
+                        self._view = view
 
-        class AppPresenter:
-            def __init__(self,view : {class_name}View):
-                self._view = view
+            """
+    )
 
-    """
-
-    view_path = cwd + "/views/" + view_name + "_view.py"
-    presenter_path = cwd + "/presenter/" + view_name + "_view.py"
-
-    create_python_file(view_path, view_content)
+    file_name = name + "_presenter.py"
+    presenter_path = cwd + "/presenter/" + file_name
     create_python_file(presenter_path, presenter_content)
+    append_in_init(presenter_path, file_name, presenter_class_name)
+
+
+@app.command()
+def create_view(name: str = typer.Option(..., "--name")):
+    cwd = os.getcwd()
+    presenter_class_name = inflection.camelize(f"{name}Presenter", uppercase_first_letter=True)
+    view_class_name = inflection.camelize(f"{name}View", uppercase_first_letter=True)
+    view_content = textwrap.dedent(
+        f"""
+        import flet as ft
+        from flet.core.types import MainAxisAlignment, CrossAxisAlignment
+        from model import EnvModel
+        from typing import Optional, TYPE_CHECKING
+
+        if TYPE_CHECKING:
+            from presenter import {presenter_class_name}
+
+
+        class {view_class_name}:
+            def __init__(self, env: EnvModel):
+                self._env = env
+                self._presenter: Optional["{presenter_class_name}"] = None
+            
+            def build(self):
+                return ft.View()
+        """
+    )
+
+    file_name = name + "_view.py"
+    view_path = cwd + "/views/" + file_name
+    create_python_file(view_path, view_content)
+    append_in_init(view_path, file_name, view_class_name)
 
 
 def main():
