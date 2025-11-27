@@ -177,7 +177,7 @@ def create_repos(name: str = typer.Option(..., "--name")):
                 from db import Database
             
             
-            class UserRepos:
+            class {repos_class_name}:
                 def __init__(self, env: 'EnvModel', db: "Database"):
                     self._env = env
                     self._db = db
