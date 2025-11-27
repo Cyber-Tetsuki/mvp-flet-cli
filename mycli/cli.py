@@ -197,8 +197,8 @@ def create_repos(name: str = typer.Option(..., "--name")):
 
 @app.command()
 def create_rs(name: str = typer.Option(..., "--name")):
-    create_view(name)
-    create_presenter(name)
+    create_repos(name)
+    create_service(name)
 
 
 def main():
