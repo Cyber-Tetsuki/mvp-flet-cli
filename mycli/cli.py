@@ -83,7 +83,7 @@ def append_vp_in_factory(name: str):
     final_content = template.render(func_code=new_func)
 
     with open(path, "w") as f:
-        f.write(final_content)
+        f.write(textwrap.dedent(final_content))
 
 
 def create_python_file(path: str, content: str):
