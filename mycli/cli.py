@@ -118,7 +118,7 @@ def append_in_main_routing(name: str):
         typer.echo(traceback.format_exc())
 
 
-def append_vp_in_factory(name: str):
+def append_vp_in_factory(name: str, folder: str):
     try:
         view_name = name + "_view"
         presenter_class_name = inflection.camelize(f"{name}Presenter", uppercase_first_letter=True)
@@ -129,6 +129,11 @@ def append_vp_in_factory(name: str):
         from views import {view_class_name}
         from presenter import {presenter_class_name}
         """)
+        if folder:
+            new_content = textwrap.dedent(f"""
+                   from views.{folder} import {view_class_name}
+                   from presenter.{folder} import {presenter_class_name}
+                   """)
 
         for index, line in enumerate(content.splitlines()):
             if index == len(content.splitlines()) - 1:
@@ -179,6 +184,17 @@ def create_presenter(name: str = typer.Option(..., "--name"), folder=typer.Optio
 
             """
     )
+    if folder:
+        presenter_content = textwrap.dedent(
+            f"""
+                        from views.{folder} import {view_class_name}
+
+                        class {presenter_class_name}:
+                            def __init__(self,view : {view_class_name}):
+                                self._view = view
+
+                    """
+        )
 
     file_name = name + "_presenter.py"
     presenter_path = cwd + "/presenter/"
@@ -220,6 +236,28 @@ def create_view(name: str = typer.Option(..., "--name"), folder=typer.Option(Non
         """
     )
 
+    if folder:
+        view_content = textwrap.dedent(
+            f"""
+               import flet as ft
+               from flet.core.types import MainAxisAlignment, CrossAxisAlignment
+               from model import EnvModel
+               from typing import Optional, TYPE_CHECKING
+
+               if TYPE_CHECKING:
+                   from presenter.{folder} import {presenter_class_name}
+
+
+               class {view_class_name}:
+                   def __init__(self, env: EnvModel):
+                       self._env = env
+                       self._presenter: Optional["{presenter_class_name}"] = None
+
+                   def build(self):
+                       return ft.View()
+               """
+        )
+
     file_name = name + "_view.py"
     view_path = cwd + "/views/"
     if folder:
@@ -235,10 +273,10 @@ def create_view(name: str = typer.Option(..., "--name"), folder=typer.Option(Non
 
 
 @app.command()
-def create_vp(name: str = typer.Option(..., "--name")):
+def create_vp(name: str = typer.Option(..., "--name"), folder=typer.Option(None, "--folder")):
     create_view(name)
     create_presenter(name)
-    append_vp_in_factory(name)
+    append_vp_in_factory(name, folder)
     append_in_main_routing(name)
 
 
