@@ -148,6 +148,7 @@ def append_vp_in_factory(name: str, folder: str):
         view = {view_class_name}(self._env)
         presenter = {presenter_class_name}(view)
         view._presenter = presenter
+        self._current_view = view
         return view.build()
         """
 
@@ -252,7 +253,10 @@ def create_view(name: str = typer.Option(..., "--name"), folder=typer.Option(Non
                    def __init__(self, env: EnvModel):
                        self._env = env
                        self._presenter: Optional["{presenter_class_name}"] = None
-
+                   
+                   def on_rendered(self):
+                       pass
+                       
                    def build(self):
                        return ft.View()
                """
