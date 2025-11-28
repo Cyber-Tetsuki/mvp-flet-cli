@@ -41,7 +41,14 @@ def create(
 
 def append_in_init_file(path: str, file_name: str, class_name: str):
     try:
+        if not os.path.exists(path):
+            os.makedirs(path)
+
         init_path = path + "/__init__.py"
+        if not os.path.exists(init_path):
+            with open(init_path, "w") as f:
+                f.write("")
+
         with open(init_path, "r") as f:
             content = textwrap.dedent(f.read())
 
