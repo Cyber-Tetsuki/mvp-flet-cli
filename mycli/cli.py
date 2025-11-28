@@ -1,5 +1,7 @@
 import sys
 import traceback
+from tkinter.font import names
+
 import typer
 import copier
 import os
@@ -79,6 +81,30 @@ def append_rs_in_factory(name: str):
         """
         final_content = template.render(init_code=init_code)
 
+        with open(path, "w") as f:
+            f.write(final_content)
+    except Exception as e:
+        typer.echo(e)
+        typer.echo(traceback.format_exc())
+
+
+def append_in_main_routing(name: str):
+    try:
+        path = "main.py"
+        content = open(path).read()
+        view_name = f"create_{name.removesuffix('.py')}_view"
+        new_route = f'\t\t"/{name.removesuffix(".py")}" : factory.{view_name}()'
+        new_content = ""
+        for index, line in enumerate(content.splitlines()):
+            if "append here. ps. ###dont remove this comment" in line:
+                line += "\n" + "{{ route_code }},"
+            new_content += "\n" + line
+
+        template = Template(new_content)
+
+        final_content = template.render(route_code=new_route)
+
+        print(final_content)
         with open(path, "w") as f:
             f.write(final_content)
     except Exception as e:
@@ -197,6 +223,7 @@ def create_vp(name: str = typer.Option(..., "--name")):
     create_view(name)
     create_presenter(name)
     append_vp_in_factory(name)
+    append_in_main_routing(name)
 
 
 @app.command()
