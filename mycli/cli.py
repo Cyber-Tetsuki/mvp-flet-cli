@@ -104,7 +104,6 @@ def append_in_main_routing(name: str):
 
         final_content = template.render(route_code=new_route)
 
-        print(final_content)
         with open(path, "w") as f:
             f.write(final_content)
     except Exception as e:
@@ -159,7 +158,7 @@ def create_python_file(path: str, content: str):
 
 
 @app.command()
-def create_presenter(name: str = typer.Option(..., "--name")):
+def create_presenter(name: str = typer.Option(..., "--name"), folder=typer.Option(None, "--folder")):
     cwd = os.getcwd()
     presenter_class_name = inflection.camelize(f"{name}Presenter", uppercase_first_letter=True)
     view_class_name = inflection.camelize(f"{name}View", uppercase_first_letter=True)
@@ -176,6 +175,11 @@ def create_presenter(name: str = typer.Option(..., "--name")):
 
     file_name = name + "_presenter.py"
     presenter_path = cwd + "/presenter/"
+    if folder:
+        presenter_path += f"/{folder}/"
+        if not os.path.exists(presenter_path):
+            os.makedirs(presenter_path)
+
     file_path = presenter_path + file_name
     create_python_file(file_path, presenter_content)
     append_in_init_file(presenter_path, file_name, presenter_class_name)
@@ -184,7 +188,7 @@ def create_presenter(name: str = typer.Option(..., "--name")):
 
 
 @app.command()
-def create_view(name: str = typer.Option(..., "--name")):
+def create_view(name: str = typer.Option(..., "--name"), folder=typer.Option(None, "--folder")):
     cwd = os.getcwd()
     presenter_class_name = inflection.camelize(f"{name}Presenter", uppercase_first_letter=True)
     view_class_name = inflection.camelize(f"{name}View", uppercase_first_letter=True)
@@ -211,6 +215,11 @@ def create_view(name: str = typer.Option(..., "--name")):
 
     file_name = name + "_view.py"
     view_path = cwd + "/views/"
+    if folder:
+        view_path += f"/{folder}/"
+        if not os.path.exists(view_path):
+            os.makedirs(view_path)
+
     file_path = view_path + file_name
     create_python_file(file_path, view_content)
     append_in_init_file(view_path, file_name, view_class_name)
