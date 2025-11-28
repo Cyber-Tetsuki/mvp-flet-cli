@@ -274,8 +274,8 @@ def create_view(name: str = typer.Option(..., "--name"), folder=typer.Option(Non
 
 @app.command()
 def create_vp(name: str = typer.Option(..., "--name"), folder=typer.Option(None, "--folder")):
-    create_view(name)
-    create_presenter(name)
+    create_view(name, folder)
+    create_presenter(name, folder)
     append_vp_in_factory(name, folder)
     append_in_main_routing(name)
 
