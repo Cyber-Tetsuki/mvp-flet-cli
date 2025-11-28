@@ -100,7 +100,7 @@ def append_in_main_routing(name: str):
         path = "main.py"
         content = open(path).read()
         view_name = f"create_{name.removesuffix('.py')}_view"
-        new_route = f'\t\t"/{name.removesuffix(".py")}" : factory.{view_name}()'
+        new_route = f'\t\t"/{name.removesuffix(".py")}" : lambda : factory.{view_name}()'
         new_content = ""
         for index, line in enumerate(content.splitlines()):
             if "append here. ps. ###dont remove this comment" in line:
