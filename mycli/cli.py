@@ -298,8 +298,8 @@ def create_service(name: str = typer.Option(..., "--name")):
             
             
             class {service_class_name}:
-                def __init__(self, setting_repos: '{repos_class_name}'):
-                    self._setting_repos = setting_repos
+                def __init__(self, {name.removesuffix('.py')}_repos: '{repos_class_name}'):
+                    self._{name.removesuffix('.py')}_repos = setting_repos
 
           """
     )
