@@ -231,7 +231,10 @@ def create_view(name: str = typer.Option(..., "--name"), folder=typer.Option(Non
             def __init__(self, env: EnvModel):
                 self._env = env
                 self._presenter: Optional["{presenter_class_name}"] = None
-            
+                
+            def is_rendered(self):
+                pass
+                
             def build(self):
                 return ft.View()
         """
