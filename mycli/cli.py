@@ -232,7 +232,7 @@ def create_view(name: str = typer.Option(..., "--name"), folder=typer.Option(Non
                 self._env = env
                 self._presenter: Optional["{presenter_class_name}"] = None
                 
-            def is_rendered(self):
+            def on_rendered(self):
                 pass
                 
             def build(self):
