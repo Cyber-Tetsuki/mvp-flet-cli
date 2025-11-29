@@ -225,11 +225,13 @@ def create_view(name: str = typer.Option(..., "--name"), folder=typer.Option(Non
 
         if TYPE_CHECKING:
             from presenter import {presenter_class_name}
+            from navigator import Navigator
 
 
         class {view_class_name}:
-            def __init__(self, env: EnvModel):
+            def __init__(self, env: EnvModel,navigator : Navigator):
                 self._env = env
+                self._navigator = navigator
                 self._presenter: Optional["{presenter_class_name}"] = None
                 
             def on_rendered(self):
