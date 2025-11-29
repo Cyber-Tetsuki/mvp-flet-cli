@@ -145,7 +145,7 @@ def append_vp_in_factory(name: str, folder: str):
 
         new_func = f"""
     def create_{view_name.removesuffix('.py')}(self):
-        view = {view_class_name}(self._env)
+        view = {view_class_name}(self._env,self._navigator)
         presenter = {presenter_class_name}(view)
         view._presenter = presenter
         self._current_view = view
